@@ -10,52 +10,17 @@
  * governing permissions and limitations under the License.
  */
 
-export const [setLibs, getLibs] = (() => {
-  let libs;
-  return [
-    (prodLibs, location) => {
-      libs = (() => {
-        const { hostname, search } = location || window.location;
-        if (!(hostname.includes('.aem.') || hostname.includes('local'))) return prodLibs;
-        const branch = new URLSearchParams(search).get('milolibs') || 'main';
-        if (branch === 'local') return 'http://localhost:6456/libs';
-        return branch.includes('--') ? `https://${branch}.aem.live/libs` : `https://${branch}--milo--adobecom.aem.live/libs`;
-      })();
-      return libs;
-    }, () => libs,
-  ];
-})();
+import {
+  setLibs,
+  decorateArea,
+} from './utils.js';
 
+const STYLES = ['/education/styles/styles.css'];
 
-function decorateArea(area = document) {
-  const eagerLoad = (parent, selector) => {
-    const img = parent.querySelector(selector);
-    img?.removeAttribute('loading');
-  };
-
-  (async function loadLCPImage() {
-    const marquee = document.querySelector('.marquee');
-    if (!marquee) {
-      eagerLoad(document, 'img');
-      return;
-    }
-  
-    // First image of first row
-    eagerLoad(marquee, 'div:first-child img');
-    // Last image of last column of last row
-    eagerLoad(marquee, 'div:last-child > div:last-child img');
-  }());
-}
-
-// Add project-wide style path here.
-const STYLES = '';
-
-// Use 'https://milo.adobe.com/libs' if you cannot map '/libs' to milo's origin.
 const LIBS = '/libs';
 
-// Add any config options.
 const CONFIG = {
-  // codeRoot: '',
+  codeRoot: '/education',
   // contentRoot: '',
   // imsClientId: 'college',
   // imsScope: 'AdobeID,openid,gnav',
@@ -70,8 +35,6 @@ const CONFIG = {
   },
 };
 
-// Decorate the page with site specific needs.
-decorateArea();
 
 /*
  * ------------------------------------------------------------
@@ -93,8 +56,15 @@ const miloLibs = setLibs(LIBS);
 }());
 
 (async function loadPage() {
-  const { loadArea, setConfig } = await import(`${miloLibs}/utils/utils.js`);
+  const { loadArea, setConfig, loadLana } = await import(`${miloLibs}/utils/utils.js`);
   const config = setConfig({ ...CONFIG, miloLibs });
-  console.log(config);
+  decorateArea();
+  loadLana({ clientId: 'education' });
   await loadArea();
+}());
+
+(async function loadDa() {
+  if (!new URL(window.location.href).searchParams.get('dapreview')) return;
+  // eslint-disable-next-line import/no-unresolved
+  import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
