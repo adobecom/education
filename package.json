@@ -9,7 +9,7 @@
     "test:watch": "npm test -- --watch",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint .",
-    "lint:css": "stylelint 'blocks/**/*.css' 'styles/*.css'"
+    "lint:css": "stylelint 'education/blocks/**/*.css' 'education/styles/*.css'"
   },
   "repository": {
     "type": "git",
@@ -25,8 +25,6 @@
     "@babel/core": "7.17.7",
     "@babel/eslint-parser": "7.17.0",
     "@esm-bundle/chai": "4.3.4-fix.0",
-    "@web/dev-server-import-maps": "^0.0.6",
-    "@web/test-runner": "0.13.27",
     "@web/test-runner-commands": "0.6.1",
     "chai": "4.3.6",
     "eslint": "8.11.0",
@@ -39,5 +37,9 @@
     "stylelint": "14.6.0",
     "stylelint-config-prettier": "9.0.3",
     "stylelint-config-standard": "25.0.0"
+  },
+  "dependencies": {
+    "@web/dev-server-import-maps": "^0.2.1",
+    "@web/test-runner": "^0.20.2"
   }
 }

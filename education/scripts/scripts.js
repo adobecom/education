@@ -35,7 +35,6 @@ const CONFIG = {
   },
 };
 
-
 /*
  * ------------------------------------------------------------
  * Edit below at your own risk
@@ -55,13 +54,16 @@ const miloLibs = setLibs(LIBS);
   });
 }());
 
-(async function loadPage() {
+async function loadPage() {
   const { loadArea, setConfig, loadLana } = await import(`${miloLibs}/utils/utils.js`);
+  // eslint-disable-next-line no-unused-vars
   const config = setConfig({ ...CONFIG, miloLibs });
   decorateArea();
   loadLana({ clientId: 'education' });
   await loadArea();
-}());
+}
+
+loadPage();
 
 (async function loadDa() {
   if (!new URL(window.location.href).searchParams.get('dapreview')) return;
